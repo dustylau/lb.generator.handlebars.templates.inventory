@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory/issues"
   },
-  "homepage": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory#readme"
+  "homepage": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory#readme",
+  "dependencies": {
+    "lb.generator.handlebars": "^1.2.16"
+  }
 }
