@@ -1,0 +1,25 @@
+{
+  "name": "lb.generator.handlebars.templates.inventory",
+  "version": "1.0.0",
+  "description": "Letter B - Generator - Templates - Inventory",
+  "main": "generate.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustylau/lb.generator.handlebars.templates.inventory.git"
+  },
+  "keywords": [
+    "letterb",
+    "templates",
+    "handlebars",
+    "inventory"
+  ],
+  "author": "Dustin Lau (Letter B)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory/issues"
+  },
+  "homepage": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory#readme"
+}
