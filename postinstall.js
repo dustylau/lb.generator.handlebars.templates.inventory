@@ -10,10 +10,14 @@
 
 var gentlyCopy = require('gently-copy');
 
-var filesToCopy = ['generate-inventory.js', 'templates', 'models'];
-
 // User's local directory
 var userPath = process.env.INIT_CWD;
 
+var filesToCopy = ['generate-inventory.js', 'models'];
 // Moving files to user's local directory
 gentlyCopy(filesToCopy, userPath);
+
+
+var filesToCopy = ['templates'];
+// Moving files to user's local directory
+gentlyCopy(filesToCopy, userPath, { overwrite: true});

@@ -1,18 +1,17 @@
-{{#each entity.Views}}
 using System;
 using FluentMigrator;
 
-namespace {{../domain.Namespace}}.Database.Migrations
+namespace {{domain.Namespace}}.Database.Migrations
 {
-    [Migration({{MigrationId}})]
-    public class Migration_{{MigrationId}}_{{Name}} : Migration
+    [Migration({{entity.MigrationId}})]
+    public class Migration_{{entity.MigrationId}}_{{entity.Name}} : Migration
     {
         public override void Up()
         {
             if (!Schema.Table("{{Name}}").Exists())
             {
-                Create.Table("{{Name}}")
-                {{#each Properties}}
+                Create.Table("{{entity.Name}}")
+                {{#each entity.Properties}}
                     .WithColumn("{{Name}}").As{{getSystemType .}}({{#if Length}}{{Length}}{{/if}}
                         {{~#if Scale}}{{Scale}}, {{Precision}}{{/if}})
                         {{~#if IsNullable}}.Nullable(){{else}}.NotNullable(){{/if}}
@@ -22,7 +21,7 @@ namespace {{../domain.Namespace}}.Database.Migrations
 
                 return;
             }
-            {{#each Properties}}
+            {{#each entity.Properties}}
 
             if (!Schema.Table("{{../Name}}").Column("{{Name}}").Exists())
                 Alter.Table("{{../Name}}").AddColumn("{{Name}}").As{{getSystemType .}}({{#if Length}}{{Length}}{{/if}}
@@ -35,14 +34,12 @@ namespace {{../domain.Namespace}}.Database.Migrations
         public override void Down()
         {
             /*
-            if (Schema.Table("{{Name}}").Exists())
-                Delete.Table("{{Name}}");
+            if (Schema.Table("{{entity.Name}}").Exists())
+                Delete.Table("{{entity.Name}}");
             */
 
             //throw new NotImplementedException();
         }
     }
 }
-//[Migration_{{MigrationId}}_{{Name}}.cs]
-//##SPLIT##
-{{/each}}
+//[Migration_{{entity.MigrationId}}_{{entity.Name}}.cs]
