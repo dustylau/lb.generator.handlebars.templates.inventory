@@ -1,0 +1,48 @@
+{{#each entity.Views}}
+using System;
+using FluentMigrator;
+
+namespace {{../domain.Namespace}}.Database.Migrations
+{
+    [Migration({{MigrationId}})]
+    public class Migration_{{MigrationId}}_{{Name}} : Migration
+    {
+        public override void Up()
+        {
+            if (!Schema.Table("{{Name}}").Exists())
+            {
+                Create.Table("{{Name}}")
+                {{#each Properties}}
+                    .WithColumn("{{Name}}").As{{getSystemType .}}({{#if Length}}{{Length}}{{/if}}
+                        {{~#if Scale}}{{Scale}}, {{Precision}}{{/if}})
+                        {{~#if IsNullable}}.Nullable(){{else}}.NotNullable(){{/if}}
+                        {{~#if IsId}}.PrimaryKey("PK_{{../Name}}"){{/if}}
+                        {{/each}}
+                    .WithColumn("Version").AsInt64().NotNullable();
+
+                return;
+            }
+            {{#each Properties}}
+
+            if (!Schema.Table("{{../Name}}").Column("{{Name}}").Exists())
+                Alter.Table("{{../Name}}").AddColumn("{{Name}}").As{{getSystemType .}}({{#if Length}}{{Length}}{{/if}}
+                    {{~#if Scale}}{{Scale}}, {{Precision}}{{/if}})
+                    {{~#if IsNullable}}.Nullable(){{else}}.NotNullable(){{/if}}
+                    {{~#if IsId}}.PrimaryKey("PK_{{../Name}}"){{/if}};
+            {{/each}}
+        }
+
+        public override void Down()
+        {
+            /*
+            if (Schema.Table("{{Name}}").Exists())
+                Delete.Table("{{Name}}");
+            */
+
+            //throw new NotImplementedException();
+        }
+    }
+}
+//[Migration_{{MigrationId}}_{{Name}}.cs]
+//##SPLIT##
+{{/each}}

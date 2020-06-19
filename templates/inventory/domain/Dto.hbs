@@ -1,0 +1,53 @@
+using System;
+using {{domain.Namespace}}.Domain.Interfaces;
+using {{domain.Namespace}}.Domain.Interfaces.Data;
+
+namespace {{domain.Namespace}}.Domain.Dtos
+{
+    public class {{entity.Name}}Dto : I{{entity.Name}}
+    {
+        {{#each entity.Properties}}
+        public virtual {{getType .}} {{Name}} { get; set; }
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+
+        public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+        public virtual I{{RelatedEntity}} {{Name}} { get; set; }
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+
+        public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+        public virtual I{{RelatedEntity}} {{Name}} { get; set; }
+        {{/each}}
+
+        public {{entity.Name}}Dto()
+        {
+        }
+
+        public {{entity.Name}}Dto(I{{entity.Name}} {{camelCase entity.Name}})
+        {
+            CopyFrom({{camelCase entity.Name}});
+        }
+
+        public I{{entity.Name}} CopyFrom(I{{entity.Name}} @from)
+        {
+            {{#each entity.Properties}}
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+            {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+            {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            return this;
+        }
+
+        public void CopyTo(I{{entity.Name}} @to)
+        {
+            @to.CopyFrom(this);
+        }
+    }
+}

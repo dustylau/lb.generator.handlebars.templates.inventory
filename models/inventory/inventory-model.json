@@ -1,0 +1,469 @@
+﻿{
+  "$id": "1",
+  "ProjectRoot": "../src/LB.Inventory",
+  "CoreNamespace": "LB.Core",
+  "CoreESNamespace": null,
+  "Namespace": "LB.Inventory",
+  "DomainEntities": [
+    {
+      "$id": "2",
+      "Name": "Item",
+      "Description": null,
+      "Snapshottable": false,
+      "Properties": [],
+      "Actions": [],
+      "Views": [],
+      "Relations": [
+        {
+          "$id": "3",
+          "Name": "ItemType",
+          "RelationType": "ManyToOne",
+          "Description": null,
+          "RelatedEntity": "ItemType",
+          "IsRequired": true,
+          "Id": "45b60000-0edc-3c97-19a4-08d7fba26f3a",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "4",
+          "Name": "ItemGroup",
+          "RelationType": "ManyToOne",
+          "Description": null,
+          "RelatedEntity": "ItemGroup",
+          "IsRequired": null,
+          "Id": "45b60000-0edc-3c97-56bd-08d7fba26f3b",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "5",
+          "Name": "ItemClass",
+          "RelationType": "ManyToOne",
+          "Description": null,
+          "RelatedEntity": "ItemClass",
+          "IsRequired": null,
+          "Id": "45b60000-0edc-3c97-59b2-08d7fba26f3b",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [
+        {
+          "$id": "6",
+          "InterfaceName": "IEntity",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-df9c-08d7fba26f3e",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "7",
+          "InterfaceName": "IHasDescription",
+          "IsMixinOnly": true,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-08d7-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "8",
+          "InterfaceName": "IActivatable",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-0d97-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-23bf-08d7fba26f3f",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "9",
+      "Name": "Location",
+      "Description": null,
+      "Snapshottable": false,
+      "Properties": [],
+      "Actions": [],
+      "Views": [],
+      "Relations": [
+        {
+          "$id": "10",
+          "Name": "ParentLocation",
+          "RelationType": "ManyToOne",
+          "Description": null,
+          "RelatedEntity": "Location",
+          "IsRequired": null,
+          "Id": "45b60000-0edc-3c97-50ee-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [
+        {
+          "$id": "11",
+          "InterfaceName": "IEntity",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-5714-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "12",
+          "InterfaceName": "IHasDescription",
+          "IsMixinOnly": true,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-59f1-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "13",
+          "InterfaceName": "IActivatable",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-5d1e-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-60ec-08d7fba26f3f",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "14",
+      "Name": "ItemType",
+      "Description": null,
+      "Snapshottable": false,
+      "Properties": [],
+      "Actions": [],
+      "Views": [],
+      "Relations": [],
+      "Interfaces": [
+        {
+          "$id": "15",
+          "InterfaceName": "IEntity",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-735c-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "16",
+          "InterfaceName": "IHasDescription",
+          "IsMixinOnly": true,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-806b-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "17",
+          "InterfaceName": "IActivatable",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-8e11-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-9490-08d7fba26f3f",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "18",
+      "Name": "ItemClass",
+      "Description": null,
+      "Snapshottable": false,
+      "Properties": [],
+      "Actions": [],
+      "Views": [],
+      "Relations": [],
+      "Interfaces": [
+        {
+          "$id": "19",
+          "InterfaceName": "IEntity",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-bd0b-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "20",
+          "InterfaceName": "IHasDescription",
+          "IsMixinOnly": true,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-c9a8-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "21",
+          "InterfaceName": "IActivatable",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-d759-08d7fba26f3f",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-e0fe-08d7fba26f3f",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "22",
+      "Name": "ItemGroup",
+      "Description": null,
+      "Snapshottable": false,
+      "Properties": [],
+      "Actions": [],
+      "Views": [],
+      "Relations": [],
+      "Interfaces": [
+        {
+          "$id": "23",
+          "InterfaceName": "IEntity",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-02cb-08d7fba26f40",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "24",
+          "InterfaceName": "IHasDescription",
+          "IsMixinOnly": true,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-0dfb-08d7fba26f40",
+          "Tags": null,
+          "CustomProperties": null
+        },
+        {
+          "$id": "25",
+          "InterfaceName": "IActivatable",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-1a22-08d7fba26f40",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-1fc4-08d7fba26f40",
+      "Tags": null,
+      "CustomProperties": null
+    }
+  ],
+  "DomainEnums": [],
+  "Interfaces": [
+    {
+      "$id": "26",
+      "Name": "IHasId<TId>",
+      "Description": null,
+      "Namespace": null,
+      "Properties": [
+        {
+          "$id": "27",
+          "Name": "Id",
+          "Description": null,
+          "Type": "TId",
+          "BaseType": null,
+          "IsId": true,
+          "IsRequired": null,
+          "IsNullable": null,
+          "IsGenerated": true,
+          "IsUnique": null,
+          "Length": null,
+          "Precision": null,
+          "Scale": null,
+          "DefaultExpression": null,
+          "IsEnum": null,
+          "Enum": null,
+          "Id": "45b60000-0edc-3c97-3c8c-08d7fba26f45",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [],
+      "TypeParameters": [
+        {
+          "$id": "28",
+          "Name": "TId",
+          "Id": "45b60000-0edc-3c97-4262-08d7fba26f46",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Id": "45b60000-0edc-3c97-68bd-08d7fba26f46",
+      "Tags": null,
+      "CustomProperties": {
+        "$id": "29",
+        "FileName": {
+          "$id": "30",
+          "Value": "IHasIdOfT",
+          "Name": "FileName",
+          "Type": "String"
+        }
+      }
+    },
+    {
+      "$id": "31",
+      "Name": "IHasId",
+      "Description": null,
+      "Namespace": null,
+      "Properties": [],
+      "Interfaces": [
+        {
+          "$id": "32",
+          "InterfaceName": "IHasId<TId>",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [
+            {
+              "Key": "TId",
+              "Value": "long"
+            }
+          ],
+          "Id": "45b60000-0edc-3c97-695a-08d7fba26f49",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "TypeParameters": [],
+      "Id": "45b60000-0edc-3c97-6c35-08d7fba26f49",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "33",
+      "Name": "IActivatable",
+      "Description": null,
+      "Namespace": null,
+      "Properties": [
+        {
+          "$id": "34",
+          "Name": "Active",
+          "Description": null,
+          "Type": "bool",
+          "BaseType": "bool",
+          "IsId": null,
+          "IsRequired": null,
+          "IsNullable": false,
+          "IsGenerated": null,
+          "IsUnique": null,
+          "Length": null,
+          "Precision": null,
+          "Scale": null,
+          "DefaultExpression": "1",
+          "IsEnum": null,
+          "Enum": null,
+          "Id": "45b60000-0edc-3c97-7170-08d7fba26f49",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [],
+      "TypeParameters": [],
+      "Id": "45b60000-0edc-3c97-74fa-08d7fba26f49",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "35",
+      "Name": "IEntity",
+      "Description": null,
+      "Namespace": null,
+      "Properties": [
+        {
+          "$id": "36",
+          "Name": "Code",
+          "Description": null,
+          "Type": "string",
+          "BaseType": "string",
+          "IsId": null,
+          "IsRequired": null,
+          "IsNullable": false,
+          "IsGenerated": null,
+          "IsUnique": true,
+          "Length": 50,
+          "Precision": null,
+          "Scale": null,
+          "DefaultExpression": null,
+          "IsEnum": null,
+          "Enum": null,
+          "Id": "45b60000-0edc-3c97-bad3-08d7fba26f49",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [
+        {
+          "$id": "37",
+          "InterfaceName": "IHasId",
+          "IsMixinOnly": false,
+          "TypeParameterValues": [],
+          "Id": "45b60000-0edc-3c97-c135-08d7fba26f49",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "TypeParameters": [],
+      "Id": "45b60000-0edc-3c97-c33f-08d7fba26f49",
+      "Tags": null,
+      "CustomProperties": null
+    },
+    {
+      "$id": "38",
+      "Name": "IHasDescription",
+      "Description": null,
+      "Namespace": null,
+      "Properties": [
+        {
+          "$id": "39",
+          "Name": "Description",
+          "Description": null,
+          "Type": "string",
+          "BaseType": "string",
+          "IsId": null,
+          "IsRequired": null,
+          "IsNullable": false,
+          "IsGenerated": null,
+          "IsUnique": null,
+          "Length": 100,
+          "Precision": null,
+          "Scale": null,
+          "DefaultExpression": null,
+          "IsEnum": null,
+          "Enum": null,
+          "Id": "45b60000-0edc-3c97-c8dc-08d7fba26f49",
+          "Tags": null,
+          "CustomProperties": null
+        }
+      ],
+      "Interfaces": [],
+      "TypeParameters": [],
+      "Id": "45b60000-0edc-3c97-ccec-08d7fba26f49",
+      "Tags": null,
+      "CustomProperties": null
+    }
+  ],
+  "Description": "Letter B - Inventory",
+  "Id": "45b60000-0edc-3c97-f6a1-08d7fba26f49",
+  "Tags": null,
+  "CustomProperties": {
+    "$id": "40",
+    "MainConnectionString": {
+      "$id": "41",
+      "Value": "data source=localhost\\\\SQL2017;initial catalog=LB.Inventory.DataStore;User ID=sa;Password=LBSuccess!;persist security info=False;packet size=4096",
+      "Name": "MainConnectionString",
+      "Type": "String"
+    }
+  }
+}

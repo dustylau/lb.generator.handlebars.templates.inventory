@@ -1,0 +1,21 @@
+{{#each Interfaces}}
+using System;
+{{#each Namespaces}}
+using {{../../Namespace}}.Domain.Interfaces.{{.}};
+{{/each}}
+
+namespace {{../Namespace}}.Domain.Interfaces{{#if Namespace}}.{{Namespace}}{{/if}}
+{
+    public interface {{{Name}}}{{#each Interfaces as |interface|}}{{#unless IsMixinOnly}}{{#if @first}} :{{else}},{{/if}}
+        {{{interface.TypedInterfaceName}}}{{/unless}}{{/each}}
+    {
+        {{#each Properties}}
+        {{#unless Inherited}}
+        {{Type}} {{Name}} { get; set; }
+        {{/unless}}
+        {{/each}}
+    }
+}
+//[{{#if Namespace}}{{Namespace}}\\{{/if}}{{#if CustomProperties.FileName}}{{CustomProperties.FileName.Value}}{{else}}{{Name}}{{/if}}.cs]
+//##SPLIT##
+{{/each}}

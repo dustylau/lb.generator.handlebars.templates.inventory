@@ -1,0 +1,18 @@
+CREATE TABLE [dbo].[{{entity.Name}}] ({{#each entity.Properties}}{{#unless @first}},{{/unless}}
+    [{{Name}}] {{getSqlType .}} {{#unless IsNullable}}NOT {{/unless}}NULL{{#if IsGenerated}} IDENTITY(1, 1){{/if}}{{#if DefaultExpression}} CONSTRAINT [DF_{{../entity.Name}}_{{Name}}] DEFAULT ({{DefaultExpression}}){{/if}}{{/each}},
+    {{#each entity.Relations}}
+    {{#ifEquals RelationType 'ManyToOne'}}
+    [{{Name}}{{relatedEntityIdProperty.Name}}] {{getSqlType relatedEntityIdProperty}} {{#if IsRequired}}NOT {{/if}}NULL,
+    {{/ifEquals}}
+    {{/each}}
+    CONSTRAINT [PK_{{entity.Name}}] PRIMARY KEY CLUSTERED 
+    ({{#each entity.Properties}}{{#if IsId}}{{#unless @first}},{{/unless}}
+        [{{Name}}] ASC{{/if}}{{/each}}
+    ){{#each (where entity.Properties 'IsUnique eq true')}}, 
+    CONSTRAINT [UK_{{../entity.Name}}_{{Name}}] UNIQUE ([{{Name}}] ASC ){{/each}}{{#each (where entity.Relations 'RelationType eq ManyToOne')}},
+    CONSTRAINT [FK_{{../entity.Name}}_{{Name}}] FOREIGN KEY ([{{Name}}{{relatedEntityIdProperty.Name}}]) REFERENCES [{{RelatedEntity}}]([{{relatedEntityIdProperty.Name}}])
+    {{/each}}{{#each (where entity.Relations 'RelationType eq OneToOne')}},
+    CONSTRAINT [FK_{{../entity.Name}}_{{Name}}] FOREIGN KEY ([{{Name}}{{relatedEntityIdProperty.Name}}]) REFERENCES [{{RelatedEntity}}]([{{relatedEntityIdProperty.Name}}])
+    {{/each}}
+);
+//[{{entity.Name}}.sql]

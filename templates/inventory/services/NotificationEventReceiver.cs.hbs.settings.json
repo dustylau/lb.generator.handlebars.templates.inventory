@@ -1,0 +1,4 @@
+{
+    "Target": "Model",
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Service.Notification\\NotificationEventReceiver.cs"
+}

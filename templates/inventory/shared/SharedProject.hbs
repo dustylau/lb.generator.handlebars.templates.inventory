@@ -1,0 +1,90 @@
+﻿using System;
+using System.Net.Http;
+using System.Web;
+using {{CoreNamespace}}.IOC.Interfaces;
+using {{CoreNamespace}}.Shared;
+
+namespace {{Namespace}}.Shared
+{
+    public class ApiHttpClientFactory : IFactory<HttpClient>
+    {
+        private string _defaultUrl = null;
+
+        private Uri _baseAddress;
+        private Uri BaseAddress
+        {
+            get
+            {
+                if (_baseAddress != null)
+                    return _baseAddress;
+
+                /*
+                if (string.IsNullOrWhiteSpace(_defaultUrl))
+                {
+                    try
+                    {
+                        _defaultUrl =
+                            HttpContext.Current.Request.Url.AbsoluteUri.Replace(
+                                HttpContext.Current.Request.Url.AbsolutePath, string.Empty);
+                    }
+                    catch
+                    {
+                        _defaultUrl = null;
+                    }
+                }
+                */
+
+                var baseAddress = ConfigHelper.Get<string>("ApiClientEndpoint", _defaultUrl);
+
+                if (string.IsNullOrWhiteSpace(baseAddress))
+                    return null;
+
+                if (!baseAddress.EndsWith("/"))
+                    baseAddress += "/";
+
+                if (!baseAddress.EndsWith("api/"))
+                    baseAddress += "api/";
+
+                _baseAddress = new Uri(baseAddress);
+
+                return _baseAddress;
+            }
+        }
+
+        public HttpClient Create()
+        {
+            var instance = new HttpClient();
+
+            instance.BaseAddress = BaseAddress;
+
+            return instance;
+        }
+
+        public HttpClient Create(Action<HttpClient> initialization)
+        {
+            var instance = Create();
+
+            initialization?.Invoke(instance);
+
+            return instance;
+        }
+    }
+}
+//[{{Namespace}}.Shared/ApiHttpClientFactory.cs]
+//##SPLIT##
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>
+
+//[{{Namespace}}.Shared/{{Namespace}}.Shared.csproj]

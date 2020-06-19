@@ -1,0 +1,4 @@
+{
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain\\\\{{Namespace}}.Domain.csproj",
+    "AppendToExisting": false
+}

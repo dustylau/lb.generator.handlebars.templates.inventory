@@ -1,0 +1,66 @@
+﻿using System;
+using System.Data.SqlClient;
+using FluentMigrator;
+
+namespace {{Namespace}}.Database.Migrations
+{
+    public class EnsureDatabaseExists
+    {
+        public string ConnectionString { get; protected set; }
+
+        public EnsureDatabaseExists(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+
+        public void SetConnectionString(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+
+        public void Create()
+        {
+            if (string.IsNullOrWhiteSpace(ConnectionString))
+                throw new Exception("No connection string has been supplied.");
+
+            var sqlConnectionStringBuilder = new SqlConnectionStringBuilder(ConnectionString);
+
+            var databaseName = sqlConnectionStringBuilder.InitialCatalog;
+
+            sqlConnectionStringBuilder.InitialCatalog = "master";
+
+            var createDatabase = $@"
+IF NOT EXISTS(SELECT D.name FROM sys.databases AS D WHERE D.name = '{databaseName}')
+BEGIN
+	CREATE DATABASE [{databaseName}];
+END";
+
+            using var connection = new SqlConnection(sqlConnectionStringBuilder.ToString());
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = createDatabase;
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+    }
+}
+//[{{Namespace}}.Database.Migrations/EnsureDatabaseExists.cs]
+//##SPLIT##
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Abstractions" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>
+//[{{Namespace}}.Database.Migrations/{{Namespace}}.Database.Migrations.csproj]

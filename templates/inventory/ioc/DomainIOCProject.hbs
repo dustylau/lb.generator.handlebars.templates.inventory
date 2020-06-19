@@ -1,0 +1,161 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Lamar;
+using {{CoreNamespace}}.IOC;
+using {{CoreNamespace}}.IOC.Interfaces;
+using {{CoreNamespace}}.Logging;
+using {{CoreNamespace}}.Logging.Log4Net;
+using {{CoreNamespace}}.Shared;
+using {{Namespace}}.Domain.Core.Shared;
+using log4net.Config;
+using Microsoft.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+
+namespace {{Namespace}}.IOC
+{
+    public class Bootstrapper : BootstrapperBase<Bootstrapper>
+    {
+        public ISettings Settings { get; } = new Settings();
+
+        public Action<ILoggerFactory> ConfigureLogger { get; set; } = factory =>
+        {
+        };
+
+        public Action<ILoggingBuilder> ConfigureLoggingBuilder { get; set; } = builder =>
+        {
+        };
+
+        public Func<ILoggerFactory, ILogger> CreateLogger { get; set; } = factory => factory.CreateLogger("{{Namespace}}");
+
+        public Bootstrapper()
+        {
+            Configure(configuration =>
+            {
+                var log4NetConfigPath = ConfigHelper.Get<string>( "Log4NetConfigPath", "log4net.config");
+
+                configuration.For<string>().Use(log4NetConfigPath).Named("Log4NetConfigPath");
+
+                var log4NetConfigFileInfo = new FileInfo(log4NetConfigPath);
+
+                if (!log4NetConfigFileInfo.Exists)
+                {
+                    log4NetConfigPath = $"{ConfigHelper.ConfigFileDirectory}\\{log4NetConfigPath}";
+                    log4NetConfigFileInfo = new FileInfo(log4NetConfigPath);
+                    if (!log4NetConfigFileInfo.Exists)
+                        log4NetConfigFileInfo = null;
+                }
+
+                var loggerRepository = log4net.LogManager.CreateRepository(
+                    Assembly.GetEntryAssembly(),
+                    typeof(log4net.Repository.Hierarchy.Hierarchy)
+                    );
+
+                if (log4NetConfigFileInfo != null)
+                    XmlConfigurator.Configure(loggerRepository, log4NetConfigFileInfo);
+                else
+                    BasicConfigurator.Configure(loggerRepository);
+
+                var loggerFactory = LoggerFactory
+                    .Create(ConfigureLoggingBuilder)
+                    .AddLog4Net(log4NetConfigPath);
+
+                ConfigureLogger.Invoke(loggerFactory);
+
+                configuration.ForSingletonOf<ILoggerFactory>().Use(loggerFactory);
+
+                var logger = CreateLogger == null ? loggerFactory.CreateLogger("{{Namespace}}") : CreateLogger(loggerFactory);
+
+                configuration.ForSingletonOf<ISettings>().Use(Settings);
+
+                configuration.ForSingletonOf<ILogger>().Use(logger);
+
+                configuration.ForSingletonOf<IFactory>().Use<ServiceLocatorFactory>();
+
+                configuration.ForSingletonOf<string>()
+                    .Use(context => context.GetInstance<ISettings>().MainConnectionString)
+                    .Named("ConnectionString");
+            });
+        }
+    }
+}
+//[{{Namespace}}.IOC/Bootstrapper.cs]
+//##SPLIT##
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="Lamar" Version="4.3.0" />
+    <PackageReference Include="{{CoreNamespace}}.IOC" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.4" />
+    <PackageReference Include="PetaPoco.Compiled" Version="6.0.452" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\{{Namespace}}.Domain\\{{Namespace}}.Domain.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.Shared\\{{Namespace}}.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
+//[{{Namespace}}.IOC/{{Namespace}}.IOC.csproj]
+//##SPLIT##
+<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+  <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock"/>
+    <file value="C:\Temp\" />
+    <datePattern value="yyyy-MM-dd.'txt'"/>
+    <staticLogFileName value="false"/>
+    <appendToFile value="true"/>
+    <rollingStyle value="Date"/>
+    <maxSizeRollBackups value="100"/>
+    <maximumFileSize value="15MB"/>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level App  %newline %message %newline %newline"/>
+    </layout>
+  </appender>
+  <appender name="ColoredConsoleAppender" type="log4net.Appender.ColoredConsoleAppender">
+    <mapping>
+      <level value="ERROR" />
+      <foreColor value="White" />
+      <backColor value="Red, HighIntensity" />
+    </mapping>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+    </layout>
+  </appender>
+  <root>
+    <level value="ALL"/>
+    <appender-ref ref="ColoredConsoleAppender"/>
+    <appender-ref ref="RollingLogFileAppender"/>
+  </root>
+</log4net>
+//[{{Namespace}}.IOC/log4net.config]
+//##SPLIT##
+using System;
+using {{CoreNamespace}}.Shared;
+using {{Namespace}}.Domain.Core.Shared;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.IOC
+{
+    public class Settings : ISettings
+    {
+        public string MainConnectionString { get; } = ConfigHelper.ConnectionString("Main");
+    }
+}
+//[{{Namespace}}.IOC/Settings.cs]

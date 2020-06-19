@@ -1,0 +1,50 @@
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using {{CoreNamespace}}.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.Service.Notification
+{
+    public class NotificationEventReceiver
+    {
+        private readonly ILogger _log;
+        private readonly Instance<IWebHost> _webHost;
+        private NotificationBroadcaster _broadcaster;
+
+        private NotificationBroadcaster Broadcaster
+        {
+            get
+            {
+                return _broadcaster ??= _webHost.Value.Services.GetService<NotificationBroadcaster>();
+            }
+        }
+
+        public NotificationEventReceiver()
+        {
+            _webHost = ServiceLocator.Current.GetInstance<Instance<IWebHost>>();
+            _log = ServiceLocator.Current.GetInstance<ILogger>();
+        }
+
+        private async Task Send<T>(T message)
+        {
+            if (Broadcaster == null)
+                return;
+
+            await Broadcaster.Send(message);
+        }
+        {{#each DomainEntities}}
+        {{#each Actions}}
+        {{#if (contains Tags 'PublishNotification')}}
+
+        public async Task Consume(ConsumeContext<{{Event}}> context)
+        {
+            _log.Info($"Sending {{Event}}: {context.Message.Id}");
+            await Send(context.Message);
+        }
+        {{/if}}
+        {{/each}}
+        {{/each}}
+    }
+}

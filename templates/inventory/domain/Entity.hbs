@@ -1,0 +1,84 @@
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using {{domain.Namespace}}.Domain.Core.Entities;
+using {{domain.Namespace}}.Domain.Entities.Interfaces;
+using {{domain.Namespace}}.Domain.Interfaces;
+using {{domain.Namespace}}.Domain.Interfaces.Data;
+
+namespace {{domain.Namespace}}.Domain.Entities
+{
+    public class {{entity.Name}}Entity :
+        Entity,
+        I{{entity.Name}}Entity{{#each entity.Interfaces}}{{#unless IsMixinOnly}},
+        {{TypedInterfaceName}}{{/unless}}{{/each}}
+    {
+        {{#each entity.Properties}}
+        public static readonly string {{Name}}Property = "{{Name}}";
+
+        public virtual {{getType .}} {{Name}}
+        {
+            get => Get<{{getType .}}>({{Name}}Property);
+            set => Set<{{getType .}}>({{Name}}Property, value);
+        }
+
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+        public static readonly string {{Name}}{{relatedEntityIdProperty.Name}}Property = "{{Name}}{{relatedEntityIdProperty.Name}}";
+
+        public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} 
+        { 
+            get => Get<{{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}}>({{Name}}Property);
+            set => Set<{{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}}>({{Name}}Property, value);
+        }
+
+        public static readonly string {{Name}}Property = "{{Name}}";
+
+        public virtual I{{RelatedEntity}} {{Name}}
+        { 
+            get => Get<I{{RelatedEntity}}>({{Name}}Property);
+            set => Set<I{{RelatedEntity}}>({{Name}}Property, value);
+        }
+
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+        public static readonly string {{Name}}{{relatedEntityIdProperty.Name}}Property = "{{Name}}{{relatedEntityIdProperty.Name}}";
+
+        public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} 
+        { 
+            get => Get<{{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}}>({{Name}}Property);
+            set => Set<{{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}}>({{Name}}Property, value);
+        }
+
+        public static readonly string {{Name}}Property = "{{Name}}";
+
+        public virtual I{{RelatedEntity}} {{Name}}
+        { 
+            get => Get<I{{RelatedEntity}}>({{Name}}Property);
+            set => Set<I{{RelatedEntity}}>({{Name}}Property, value);
+        }
+
+        {{/each}}
+        public I{{entity.Name}} CopyFrom(I{{entity.Name}} @from)
+        {
+            {{#each entity.Properties}}
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+            {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+            {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+            {{Name}} = @from.{{Name}};
+            {{/each}}
+            return this;
+        }
+
+        public void CopyTo(I{{entity.Name}} @to)
+        {
+            @to.CopyFrom(this);
+        }
+    }
+}

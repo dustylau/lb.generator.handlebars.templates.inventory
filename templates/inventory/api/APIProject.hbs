@@ -1,0 +1,355 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  },
+  "Log4NetConfigPath": "C:\\Users\\Dustin Lau\\Source\\repos\\\{{Namespace}}\\\{{Namespace}}.Tests\\log4net.config",
+  "EnableVerboseLogging": "false",
+  "EnableBusLogging": "false"
+}
+//[{{Namespace}}.API/appsettings.debug.json]
+//##SPLIT##
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+    "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+}
+//[{{Namespace}}.API/appsettings.Development.json]
+//##SPLIT##
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+//[{{Namespace}}.API/appsettings.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+}
+//[{{Namespace}}.API/appsettings.production.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+}
+//[{{Namespace}}.API/appsettings.test.json]
+//##SPLIT##
+﻿using System.Net;
+using System.Threading.Tasks;
+using System.Web.Http;
+using {{CoreNamespace}}.Service;
+using Microsoft.AspNetCore.Mvc;
+
+namespace {{Namespace}}.API.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class StatusController : ControllerBase
+    {
+        [Route("")]
+        [Route("Ping")]
+        [HttpGet]
+        public async Task<ServiceResponse<string>> Ping()
+        {
+            await Task.Delay(10);
+            return new ServiceResponse<string>(HttpStatusCode.OK, true, "PONG");
+        }
+    }
+}
+//[{{Namespace}}.API/Controllers/StatusController.cs]
+//##SPLIT##
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+  <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock"/>
+    <file value="C:\Temp\" />
+    <datePattern value="yyyy-MM-dd.'txt'"/>
+    <staticLogFileName value="false"/>
+    <appendToFile value="true"/>
+    <rollingStyle value="Date"/>
+    <maxSizeRollBackups value="100"/>
+    <maximumFileSize value="15MB"/>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level App  %newline %message %newline %newline"/>
+    </layout>
+  </appender>
+  <appender name="ColoredConsoleAppender" type="log4net.Appender.ManagedColoredConsoleAppender">
+    <mapping>
+      <level value="ERROR" />
+      <foreColor value="White" />
+      <backColor value="Red" />
+    </mapping>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+    </layout>
+  </appender>
+  <root>
+    <level value="DEBUG"/>
+    <appender-ref ref="ColoredConsoleAppender"/>
+    <appender-ref ref="RollingLogFileAppender"/>
+  </root>
+</log4net>
+//[{{Namespace}}.API/log4net.config]
+//##SPLIT##
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.API
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
+}
+
+//[{{Namespace}}.API/Program.cs]
+//##SPLIT##
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:64193",
+      "sslPort": 44374
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "{{Namespace}}.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+
+//[{{Namespace}}.API/Properties/launchSettings.json]
+//##SPLIT##
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using {{Namespace}}.Domain.Data;
+using {{Namespace}}.IOC;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using PetaPoco;
+using PetaPoco.Providers;
+
+namespace {{Namespace}}.API
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Bootstrapper.BootstrapAndSetLocatorProvider(container =>
+            {
+                container.For<IDatabase>()
+                    .Use(
+                        context => DatabaseConfiguration.Build()
+                            .UsingConnectionString(context.GetInstance<string>("ConnectionString"))
+                            .UsingProvider<SqlServerDatabaseProvider>()
+                            .Create()
+                    );
+
+                container.For<DataStore>().Use<DataStore>();
+            });
+
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddTransient<DataStore>(serviceProvider => ServiceLocator.Current.GetInstance<DataStore>());
+
+            services.AddControllers();
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "{{#if CustomProperties.ServiceDisplayName.Value}}{{{CustomProperties.ServiceDisplayName.Value}}}{{else}}LB - Inventory{{/if}} - API", Version = "v1" });
+            });
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "{{#if CustomProperties.ServiceDisplayName.Value}}{{{CustomProperties.ServiceDisplayName.Value}}}{{else}}LB - Inventory{{/if}} - API");
+            });
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
+}
+
+//[{{Namespace}}.API/Startup.cs]
+//##SPLIT##
+using System;
+
+namespace {{Namespace}}.API
+{
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
+
+        public string Summary { get; set; }
+    }
+}
+
+//[{{Namespace}}.API/WeatherForecast.cs]
+//##SPLIT##
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings.debug.json" />
+    <Content Remove="appsettings.Development.json" />
+    <Content Remove="appsettings.production.json" />
+    <Content Remove="appsettings.test.json" />
+    <Content Remove="log4net.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="appsettings.debug.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.debug.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appsettings.production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="Lamar" Version="4.3.0" />
+    <PackageReference Include="{{CoreNamespace}}.IOC" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.4" />
+    <PackageReference Include="NewId" Version="3.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PetaPoco.Compiled" Version="6.0.452" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.4.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\{{Namespace}}.Domain.Data.PetaPoco\\{{Namespace}}.Domain.Data.PetaPoco.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.Domain\\{{Namespace}}.Domain.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.IOC\\{{Namespace}}.IOC.csproj" />
+  </ItemGroup>
+
+
+</Project>
+
+//[{{Namespace}}.API/{{Namespace}}.API.csproj]

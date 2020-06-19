@@ -1,0 +1,245 @@
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+  "Log4NetConfigPath": "C:\\Users\\Dustin Lau\\Source\\repos\\\{{Namespace}}\\\{{Namespace}}.Tests\\log4net.config",
+  "EnableVerboseLogging": "false",
+  "EnableBusLogging": "false" 
+}
+//[{{Namespace}}.Tests/appsettings.debug.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Tests/appsettings.development.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Tests/appsettings.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Tests/appsettings.production.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Tests/appsettings.test.json]
+//##SPLIT##
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace {{Namespace}}.Tests
+{
+    public class DatabaseTestHelpers
+    {
+        public static string ClearTablesScript
+        {
+            get { return @"
+DECLARE @Table TABLE
+(
+ Id INT IDENTITY
+        PRIMARY KEY,
+ Name NVARCHAR(128),
+ Dropped BIT DEFAULT (0)
+);
+
+INSERT  INTO @Table
+        (
+         Name
+        )
+SELECT
+    T.name
+FROM
+    sys.tables AS T
+WHERE
+    T.type = 'U'
+ORDER BY
+    T.name;
+
+DECLARE
+    @Id INT,
+    @Name NVARCHAR(128),
+    @Count INT,
+    @SQL NVARCHAR(MAX),
+    @Success INT,
+    @RemainingCount INT,
+    @Dropped BIT;
+
+SELECT
+    @Id = 1,
+    @Count = COUNT(*)
+FROM
+    @Table;
+
+SELECT
+    @RemainingCount = COUNT(*)
+FROM
+    @Table
+WHERE
+    Dropped = 0;
+
+WHILE @RemainingCount > 0
+    BEGIN
+        WHILE @Id <= @Count
+            BEGIN
+				
+                SELECT
+                    @Name = T.Name,
+                    @Success = -1,
+                    @SQL = 'DROP TABLE dbo.' + T.Name + ';',
+                    @Dropped = T.Dropped
+                FROM
+                    @Table AS T
+                WHERE
+                    T.Id = @Id;
+			
+                IF @Dropped = 0
+                    BEGIN
+                        PRINT 'Dropping ' + @Name + '...';
+
+                        EXEC @Success = sp_executesql @SQL;
+
+                        PRINT 'Dropping ' + @Name + ': ' + CASE @Success
+                                                             WHEN 0 THEN 'Success'
+                                                             ELSE 'Failed'
+                                                           END;
+
+                        UPDATE
+                            @Table
+                        SET
+                            Dropped = CASE @Success
+                                        WHEN 0 THEN 1
+                                        ELSE 0
+                                      END
+                        WHERE
+                            Id = @Id;
+                    END;
+
+                SET @Id = @Id + 1;
+            END;
+
+        SELECT
+            @RemainingCount = COUNT(*)
+        FROM
+            @Table
+        WHERE
+            Dropped = 0;
+    END;
+"; }
+        }
+    }
+}
+
+//[{{Namespace}}.Tests/DatabaseTestHelpers.cs]
+//##SPLIT##
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+  <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock"/>
+    <file value="C:\Temp\" />
+    <datePattern value="yyyy-MM-dd.'txt'"/>
+    <staticLogFileName value="false"/>
+    <appendToFile value="true"/>
+    <rollingStyle value="Date"/>
+    <maxSizeRollBackups value="100"/>
+    <maximumFileSize value="15MB"/>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level App  %newline %message %newline %newline"/>
+    </layout>
+  </appender>
+  <appender name="ColoredConsoleAppender" type="log4net.Appender.ManagedColoredConsoleAppender">
+    <mapping>
+      <level value="ERROR" />
+      <foreColor value="White" />
+      <backColor value="Red" />
+    </mapping>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+    </layout>
+  </appender>
+  <root>
+    <level value="DEBUG"/>
+    <appender-ref ref="ColoredConsoleAppender"/>
+    <appender-ref ref="RollingLogFileAppender"/>
+  </root>
+</log4net>
+//[{{Namespace}}.Tests/log4net.config]
+//##SPLIT##
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="Lamar" Version="4.3.0" />
+    <PackageReference Include="{{CoreNamespace}}.IOC" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="PetaPoco.Compiled" Version="6.0.452" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\{{Namespace}}.Domain\\{{Namespace}}.Domain.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.IOC\\{{Namespace}}.IOC.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.Shared\\{{Namespace}}.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.debug.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
+
+//[{{Namespace}}.Tests/{{Namespace}}.Tests.csproj]

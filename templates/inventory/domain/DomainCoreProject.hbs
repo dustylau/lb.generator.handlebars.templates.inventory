@@ -1,0 +1,143 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using {{CoreNamespace}}.Shared;
+
+namespace {{Namespace}}.Domain.Core.Entities
+{
+    public abstract class Entity : INotifyPropertyChanged, INotifyPropertyChanging
+    {
+        private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+
+        protected T Get<T>(string property)
+        {
+            return Get<T>(property, default(T));
+        }
+
+        protected T Get<T>(string property, T defaultValue)
+        {
+            if (!_properties.TryGetValue(property, out var value))
+            {
+                Set<T>(property, defaultValue);
+                value = defaultValue;
+            }
+
+            return value.ConvertTo<T>(defaultValue);
+        }
+
+        protected void Set<T>(string property, T value)
+        {
+            OnPropertyChanging(property);
+
+            if (!_properties.ContainsKey(property))
+                _properties.Add(property, value);
+            else
+                _properties[property] = value;
+
+            OnPropertyChanged(property);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        protected virtual void OnPropertyChanging([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+    }
+}
+//[{{Namespace}}.Domain.Core/Entities/Entity.cs]
+//##SPLIT##
+using {{Namespace}}.Domain.Core.Shared;
+
+namespace {{Namespace}}.Domain.Core.Entities.Interfaces
+{
+    public interface IEntity
+    {
+    }
+
+    public interface IEntity<T> : IEntity, ICopyable<T>
+    {
+    }
+}
+//[{{Namespace}}.Domain.Core/Entities/Interfaces/IEntity.cs]
+//##SPLIT##
+namespace {{Namespace}}.Domain.Core.Shared
+{
+    public class CancellationToken
+    {
+        public bool Cancel { get; set; }
+
+        public CancellationToken()
+        {
+        }
+
+        public CancellationToken(bool cancel)
+        {
+            Cancel = cancel;
+        }
+    }
+}
+//[{{Namespace}}.Domain.Core/Shared/CancellationToken.cs]
+//##SPLIT##
+namespace {{Namespace}}.Domain.Core.Shared
+{
+    public class HandlerToken
+    {
+        public bool Handled { get; set; }
+
+        public HandlerToken()
+        {
+        }
+
+        public HandlerToken(bool handled)
+        {
+            Handled = handled;
+        }
+    }
+}
+//[{{Namespace}}.Domain.Core/Shared/HandlerToken.cs]
+//##SPLIT##
+namespace {{Namespace}}.Domain.Core.Shared
+{
+    public interface ICopyable<T>
+    {
+        T CopyFrom(T @from);
+        void CopyTo(T @to);
+    }
+}
+//[{{Namespace}}.Domain.Core/Shared/ICopyable.cs]
+//##SPLIT##
+namespace {{Namespace}}.Domain.Core.Shared
+{
+    public partial interface ISettings
+    {
+        string MainConnectionString { get; }
+    }
+}
+//[{{Namespace}}.Domain.Core/Shared/ISettings.cs]
+//##SPLIT##
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>
+
+//[{{Namespace}}.Domain.Core/{{Namespace}}.Domain.Core.csproj]

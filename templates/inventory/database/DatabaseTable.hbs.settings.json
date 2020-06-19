@@ -1,0 +1,7 @@
+{
+    "Target": "DomainEntities",
+    "ExportPath": "{{domain.ProjectRoot}}\\\\{{domain.Namespace}}.Database\\dbo\\Tables\\\\{{FileName}}",
+    "SplitOn": "//##SPLIT##",
+    "FileNamePattern": "//\\[(?<FileName>[^\\[\\]]+)\\]",
+    "RemoveFileName": true
+}

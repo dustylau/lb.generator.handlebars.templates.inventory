@@ -1,0 +1,13 @@
+using System;
+using {{domain.Namespace}}.Domain.Core.Entities.Interfaces;
+using {{domain.Namespace}}.Domain.Interfaces.Data;
+
+namespace {{domain.Namespace}}.Domain.Entities.Interfaces
+{
+    public interface I{{entity.Name}}Entity : IEntity<I{{entity.Name}}>, I{{entity.Name}}
+    {
+        {{#each entity.Properties}}
+        // new {{getType .}} {{Name}} { get; set; }
+        {{/each}}
+    }
+}

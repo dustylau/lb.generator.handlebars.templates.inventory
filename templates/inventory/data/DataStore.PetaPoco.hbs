@@ -1,0 +1,189 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using {{CoreNamespace}}.Logging;
+using {{CoreNamespace}}.Shared;
+using Microsoft.Extensions.Logging;
+using PetaPoco;
+
+namespace {{Namespace}}.Domain.Data
+{
+    public partial class DataStore : IDisposable
+    {
+        public static bool RethrowExceptions = true;
+
+        private readonly ILogger _log;
+        private readonly IDatabase _database;
+
+        private readonly Dictionary<Type, string> _tableNames = new Dictionary<Type, string>();
+
+        public DataStore(IDatabase database, ILogger log)
+        {
+            _database = database;
+            _log = log;
+        }
+
+        public string GetTableName<T>()
+        {
+            return GetTableName(typeof(T));
+        }
+
+        public string GetTableName(Type type)
+        {
+            if (_tableNames.TryGetValue(type, out var tableName))
+                return tableName;
+
+            var tableNameAttribute = type.GetCustomAttribute<TableNameAttribute>(true);
+
+            tableName = tableNameAttribute == null ? type.Name : tableNameAttribute.Value;
+
+            _tableNames.Add(type, tableName);
+
+            return tableName;
+        }
+
+        public async Task<IEnumerable<T>> GetAll<T>(string schema = "dbo")
+        {
+            return await GetAll<T>(null, null, schema);
+        }
+
+        public async Task<IEnumerable<T>> GetAll<T>(string @where, string schema = "dbo")
+        {
+            return await GetAll<T>(@where, null, schema);
+        }
+
+        public async Task<IEnumerable<T>> GetAll<T>(string @where, string @order, string schema = "dbo")
+        {
+            var tableName = GetTableName<T>();
+            var description = TypeHelper.GetDescription<T>();
+
+            _log.Debug($"Retrieving All: {description}");
+
+            await Task.Delay(1);
+
+            try
+            {
+                var query = $"SELECT * FROM {schema}.{tableName}";
+
+                if (!string.IsNullOrWhiteSpace(@where))
+                    query += $" WHERE ({@where})";
+
+                if (!string.IsNullOrWhiteSpace(@order))
+                    query += $" ORDER BY {@order}";
+
+                _log.Debug($"Executing Query: {query}");
+                return _database.Query<T>(query);
+            }
+            catch (Exception exception)
+            {
+                HandleException(
+                    $"Error Retrieving All: {description}\nError: {exception.Message}",
+                    exception
+                );
+            }
+
+            return default(IEnumerable<T>);
+        }
+
+        public async Task<T> Get<T, TId>(TId id)
+        {
+            var description = TypeHelper.GetDescription<T>();
+            
+            _log.Debug($"Retrieving {description} - Id: {id}");
+
+            try
+            {
+                return await _database.SingleOrDefaultAsync<T>(id);
+            }
+            catch (Exception exception)
+            {
+                HandleException(
+                    $"Error Retrieving {description} - Id: {id}\nError: {exception.Message}",
+                    exception
+                );
+            }
+
+            return default(T);
+        }
+
+        public async Task<TId> Insert<T, TId>(T instance)
+        {
+            var description = TypeHelper.GetDescription<T>();
+
+            _log.Debug($"Inserting {description}: {instance}");
+
+            try
+            {
+                return (TId) await _database.InsertAsync(instance);
+            }
+            catch (Exception exception)
+            {
+                HandleException(
+                    $"Error Inserting {description}: {instance}\nError: {exception.Message}",
+                    exception
+                );
+            }
+
+            return default(TId);
+        }
+
+        public async Task<int> Update<T>(T instance)
+        {
+            var description = TypeHelper.GetDescription<T>();
+
+            _log.Debug($"Updating {description}: {instance}");
+
+            try
+            {
+                return await _database.UpdateAsync(instance);
+            }
+            catch (Exception exception)
+            {
+                HandleException(
+                    $"Error Updating {description}: {instance}\nError: {exception.Message}",
+                    exception
+                );
+            }
+
+            return -1;
+        }
+
+        public async Task<int> Delete<T>(T instance)
+        {
+            var description = TypeHelper.GetDescription<T>();
+
+            _log.Debug($"Deleting {description}: {instance}");
+
+            try
+            {
+                return await _database.DeleteAsync(instance);
+            }
+            catch (Exception exception)
+            {
+                HandleException(
+                    $"Error Deleting {description}: {instance}\nError: {exception.Message}",
+                    exception
+                );
+            }
+
+            return -1;
+        }
+
+        private void HandleException(string message, Exception exception)
+        {
+            _log.Warn(message, exception);
+
+            if (RethrowExceptions)
+            {
+                throw new Exception(message, exception);
+            }
+        }
+
+        public void Dispose()
+        {
+            _database?.Dispose();
+        }
+    }
+}

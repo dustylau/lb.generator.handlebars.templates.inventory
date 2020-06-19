@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using {{domain.CoreNamespace}}.Service;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using {{domain.Namespace}}.Domain.Dtos;
+using {{domain.Namespace}}.Domain.Data;
+
+namespace {{domain.Namespace}}.API.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class {{entity.Name}}Controller : ControllerBase
+    {
+        private readonly DataStore _dataStore;
+
+        public {{entity.Name}}Controller(DataStore dataStore)
+        {
+            _dataStore = dataStore;
+        }
+
+        [HttpGet{{#if controllerRoute}}("{{controllerRoute}}"){{/if}}]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.InternalServerError)]
+        public async Task<ServiceResponse<IEnumerable<{{entity.dtoName}}>>> GetAll{{pluralize entity.Name}}()
+        {
+            try
+            {
+                var {{camelCase (pluralize entity.Name)}} = await _dataStore.Get{{pluralize entity.Name}}();
+                return new ServiceResponse<IEnumerable<{{entity.dtoName}}>>(
+                    HttpStatusCode.OK,
+                    {{camelCase (pluralize entity.Name)}}.Select({{camelCase entity.Name}} => new {{entity.dtoName}}({{camelCase entity.Name}}))
+                );
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<IEnumerable<{{entity.dtoName}}>>(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        [HttpGet("{{#if controllerRoute}}{{controllerRoute}}/{{/if}}{id}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.InternalServerError)]
+        public async Task<ServiceResponse<{{entity.dtoName}}>> Get{{entity.Name}}ById({{getType entity.idProperty}} id)
+        {
+            try
+            {
+                var {{camelCase entity.Name}} = await _dataStore.Get{{entity.Name}}(id);
+                return new ServiceResponse<{{entity.dtoName}}>(
+                    {{camelCase entity.Name}} == null
+                        ? HttpStatusCode.NotFound
+                        : HttpStatusCode.OK,
+                    new {{entity.dtoName}}({{camelCase entity.Name}})
+                );
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<{{entity.dtoName}}>(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        [HttpPost{{#if controllerRoute}}("{{controllerRoute}}"){{/if}}]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.InternalServerError)]
+        public async Task<ServiceResponse<{{getType entity.idProperty}}>> Create{{entity.Name}}({{entity.dtoName}} item)
+        {
+            try
+            {
+                var id = await _dataStore.Insert{{entity.Name}}(new DataStore.{{entity.Name}}(item));
+                return new ServiceResponse<{{getType entity.idProperty}}>(id);
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<{{getType entity.idProperty}}>(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        [HttpPut("{{#if controllerRoute}}{{controllerRoute}}/{{/if}}{id}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.InternalServerError)]
+        public async Task<ServiceResponse> Update{{entity.Name}}({{getType entity.idProperty}} id, {{entity.dtoName}} item)
+        {
+            try
+            {
+                if (id != item.{{entity.idProperty.Name}})
+                    return new ServiceResponse(HttpStatusCode.BadRequest, false);
+
+                var current = await _dataStore.Get{{entity.Name}}(id);
+
+                if (current == null)
+                    return new ServiceResponse(HttpStatusCode.NotFound, false);
+
+                current.CopyFrom(item);
+
+                var result = await _dataStore.Update{{entity.Name}}(current);
+
+                return result <= 0 
+                    ? new ServiceResponse(HttpStatusCode.BadRequest, false) 
+                    : new ServiceResponse(HttpStatusCode.OK);
+            }
+            catch (Exception exception)
+            {
+                return new ServiceResponse(HttpStatusCode.InternalServerError, exception);
+            }
+        }
+
+        [HttpDelete("{{#if controllerRoute}}{{controllerRoute}}/{{/if}}{id}")]
+        [ProducesResponseType((int) HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int) HttpStatusCode.InternalServerError)]
+        public async Task<ServiceResponse> Delete{{entity.Name}}({{getType entity.idProperty}} id)
+        {
+            try
+            {
+                var current = await _dataStore.Get{{entity.Name}}(id);
+
+                if (current == null)
+                    return new ServiceResponse(HttpStatusCode.NotFound, false);
+
+                var result = await _dataStore.Delete{{entity.Name}}(current);
+
+                return result <= 0
+                    ? new ServiceResponse(HttpStatusCode.BadRequest, false)
+                    : new ServiceResponse(HttpStatusCode.OK);
+            }
+            catch (Exception exception)
+            {
+                return new ServiceResponse(HttpStatusCode.InternalServerError, exception);
+            }
+        }
+    }
+}

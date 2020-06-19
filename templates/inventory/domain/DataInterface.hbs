@@ -1,0 +1,27 @@
+using System;
+using {{domain.Namespace}}.Domain.Core.Entities.Interfaces;
+using {{domain.Namespace}}.Domain.Core.Shared;
+
+namespace {{domain.Namespace}}.Domain.Interfaces.Data
+{
+    public interface I{{entity.Name}} :
+        ICopyable<I{{entity.Name}}>{{#if entity.Interfaces}}{{#each entity.Interfaces}}{{#unless IsMixinOnly}},
+        {{TypedInterfaceName}}{{/unless}}{{/each}}{{/if}}
+    {
+        {{#each entity.Properties}}
+        {{getType .}} {{Name}} { get; set; }
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+
+        // Relation: {{Name}}
+        {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+        I{{RelatedEntity}} {{Name}} { get; set; }
+        {{/each}}
+        {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+
+        // Relation: {{Name}}
+        {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+        I{{RelatedEntity}} {{Name}} { get; set; }
+        {{/each}}
+    }
+}

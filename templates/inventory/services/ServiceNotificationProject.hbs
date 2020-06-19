@@ -1,0 +1,362 @@
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+  //"Log4NetConfigPath": "C:\\Users\\Dustin Lau\\Source\\repos\\\{{Namespace}}\\\{{Namespace}}.Tests\\log4net.config",
+  "EnableVerboseLogging": "true",
+  "EnableBusLogging": "true" 
+}
+//[{{Namespace}}.Service.Notification/appsettings.debug.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Service.Notification/appsettings.development.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Service.Notification/appsettings.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Service.Notification/appsettings.production.json]
+//##SPLIT##
+{
+  "ConnectionStrings": {
+    "Main": "{{#if CustomProperties.MainConnectionString.Value}}{{{CustomProperties.MainConnectionString.Value}}}{{else}}data source=localhost;initial catalog={{Namespace}}.DataStore;User ID=user;Password=changeit;persist security info=False;packet size=4096{{/if}}"
+  }
+
+}
+//[{{Namespace}}.Service.Notification/appsettings.test.json]
+//##SPLIT##
+﻿namespace {{Namespace}}.Service.Notification
+{
+    public class Instance<T>
+    {
+        public T Value { get; set; }
+    }
+}
+//[{{Namespace}}.Service.Notification/Instance.cs]
+//##SPLIT##
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+  <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender">
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock"/>
+    <file value=".\" />
+    <datePattern value="yyyy-MM-dd.'txt'"/>
+    <staticLogFileName value="false"/>
+    <appendToFile value="true"/>
+    <rollingStyle value="Date"/>
+    <maxSizeRollBackups value="100"/>
+    <maximumFileSize value="15MB"/>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level App  %newline %message %newline %newline"/>
+    </layout>
+  </appender>
+  <appender name="ColoredConsoleAppender" type="log4net.Appender.ManagedColoredConsoleAppender">
+    <mapping>
+      <level value="DEBUG" />
+      <foreColor value="Blue" />
+    </mapping>
+    <mapping>
+      <level value="INFO" />
+      <foreColor value="Green" />
+    </mapping>
+    <mapping>
+      <level value="WARN" />
+      <foreColor value="Yellow" />
+    </mapping>
+    <mapping>
+      <level value="ERROR" />
+      <foreColor value="White" />
+      <backColor value="Red" />
+    </mapping>
+    <layout type="log4net.Layout.PatternLayout">
+      <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+    </layout>
+  </appender>
+  <root>
+    <level value="DEBUG"/>
+    <appender-ref ref="ColoredConsoleAppender"/>
+    <appender-ref ref="RollingLogFileAppender"/>
+  </root>
+</log4net>
+//[{{Namespace}}.Service.Notification/log4net.config]
+//##SPLIT##
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using {{CoreNamespace}}.Logging;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.Service.Notification
+{
+    public class NotificationBroadcaster
+    {
+        private static IHubContext<NotificationHub> _hubContext;
+
+        public static IHubContext<NotificationHub> HubContext => _hubContext;
+
+        private readonly IClientProxy _clientProxy;
+        private readonly ILogger _log;
+
+        public NotificationBroadcaster(IHubContext<NotificationHub> hubContext)
+        {
+            _hubContext = hubContext;
+            _clientProxy = _hubContext.Clients.All;
+            _log = ServiceLocator.Current.GetInstance<ILogger>();
+        }
+
+        public async Task Send<T>(T message)
+        {
+            Type type = typeof(T);
+
+            object id = "N/A";
+
+            var idProperty = type.GetProperty("Id", BindingFlags.Public | BindingFlags.Instance);
+
+            if (idProperty != null)
+            {
+                id = idProperty.GetValue(message);
+            }
+
+            _log.Info($"Sending {typeof(T).Name}: {id}");
+            await _clientProxy.SendAsync(typeof(T).Name, message);
+        }
+    }
+}
+//[{{Namespace}}.Service.Notification/NotificationBroadcaster.cs]
+//##SPLIT##
+﻿using System.Threading.Tasks;
+using CommonServiceLocator;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.Service.Notification
+{
+    public class NotificationHub : Hub
+    {
+
+        private readonly ILogger _log;
+        private readonly NotificationBroadcaster _broadcaster;
+
+        public NotificationHub(NotificationBroadcaster broadcaster)
+        {
+            _broadcaster = broadcaster;
+            _log = ServiceLocator.Current.GetInstance<ILogger>();
+        }
+
+        public async Task Send(string messageType, string message)
+        {
+            await Clients.All.SendAsync(messageType, message);
+        }
+    }
+}
+//[{{Namespace}}.Service.Notification/NotificationHub.cs]
+//##SPLIT##
+﻿using System;
+using System.Threading;
+using {{CoreNamespace}}.Logging;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Topshelf;
+
+namespace {{Namespace}}.Service.Notification
+{
+    public class NotificationHubService : ServiceControl
+    {
+        private readonly string _url;
+        private readonly ILogger _log;
+        //private readonly IBusControl _bus;
+        private readonly Instance<IWebHost> _webHost;
+
+        public NotificationHubService(string url, Instance<IWebHost> webHostInstance, ILogger log)
+        {
+            _url = url;
+            //_bus = bus;
+            _webHost = webHostInstance;
+            _log = log;
+        }
+
+        public bool Start(HostControl hostControl)
+        {
+            _log.Info("Starting service...");
+
+            //_log.Info($"Starting bus...");
+            //_bus.Start();
+
+            _log.Info($"Starting Web Host: {_url}...");
+
+            _webHost.Value = WebHost
+                .CreateDefaultBuilder()
+                .Configure(app =>
+                {
+                    app.UseCors(cors => cors.AllowAnyOrigin());
+                    app.UseRouting();
+                    app.UseEndpoints(endpoints =>
+                        endpoints.MapHub<NotificationHub>("/NotificationHub")
+                    );
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddSignalR();
+                    services.AddCors();
+                    services.AddSingleton<NotificationBroadcaster>();
+                })
+                .UseUrls(_url)
+                .Build();
+
+            _webHost.Value.Start();
+
+            return true;
+        }
+
+        public bool Stop(HostControl hostControl)
+        {
+            _log.Info("Stopping service...");
+
+            //_log.Info($"Stopping bus...");
+            //_bus?.Stop(TimeSpan.FromSeconds(30));
+
+            _log.Info($"Stopping Web Host: {_url}...");
+            _webHost.Value?.StopAsync().Wait();
+            _webHost.Value?.Dispose();
+            _webHost.Value = null;
+
+            return true;
+        }
+    }
+}
+//[{{Namespace}}.Service.Notification/NotificationHubService.cs]
+//##SPLIT##
+﻿using System;
+using CommonServiceLocator;
+using Lamar;
+using {{CoreNamespace}}.Logging;
+using {{CoreNamespace}}.Shared;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Topshelf;
+using {{Namespace}}.IOC;
+
+namespace {{Namespace}}.Service.Notification
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            Bootstrapper.BootstrapAndSetLocatorProvider(configuration =>
+            {
+                configuration.AddSingleton<Instance<IWebHost>>();
+
+            });
+
+            var log = ServiceLocator.Current.GetInstance<ILogger>();
+
+            log.Info("Notification Hub Starting...");
+
+            var container = ServiceLocator.Current.GetInstance<IContainer>();
+
+            var serviceDescription = ConfigHelper.Get<string>("ServiceDescription", "{{#if CustomProperties.ServiceDescription.Value}}{{{CustomProperties.ServiceDescription.Value}}}{{else}}CQRS/ES - Service{{/if}} - Notification Hub");
+            var serviceDisplayName = ConfigHelper.Get<string>("ServiceDisplayName", "{{#if CustomProperties.ServiceDisplayName.Value}}{{{CustomProperties.ServiceDisplayName.Value}}}{{else}}CQRS/ES - Framework{{/if}} - Notification Hub");
+            var serviceName = ConfigHelper.Get<string>("ServiceName", "{{Namespace}}.NotificationHub");
+
+            var returnCode = HostFactory.Run(configurator =>
+            {
+                configurator.UseLog4Net();
+
+                configurator.Service(() => container.GetInstance<NotificationHubService>());
+
+                configurator.RunAsNetworkService();
+                configurator.StartAutomatically();
+                //configurator.RunAsLocalSystem();
+                configurator.SetDescription(serviceDescription);
+                configurator.SetDisplayName(serviceDisplayName);
+                configurator.SetServiceName(serviceName);
+            });
+
+            var exitCode = (int) Convert.ChangeType(returnCode, returnCode.GetTypeCode());
+            Environment.ExitCode = exitCode;
+        }
+    }
+}
+
+//[{{Namespace}}.Service.Notification/Program.cs]
+//##SPLIT##
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="Lamar" Version="4.3.0" />
+    <PackageReference Include="{{CoreNamespace}}.IOC" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Service.Interfaces" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.4" />
+    <PackageReference Include="NewId" Version="3.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PetaPoco.Compiled" Version="6.0.452" />
+    <PackageReference Include="Topshelf" Version="4.2.1" />
+    <PackageReference Include="Topshelf.Log4Net" Version="4.2.1" />
+    <PackageReference Include="TopShelf.ServiceInstaller" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\{{Namespace}}.IOC\\{{Namespace}}.IOC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.debug.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
+
+//[{{Namespace}}.Service.Notification/{{Namespace}}.Service.Notification.csproj]

@@ -1,0 +1,4 @@
+{
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain.Data.PetaPoco\\\\{{Namespace}}.Domain.Data.PetaPoco.csproj",
+    "AppendToExisting": false
+}

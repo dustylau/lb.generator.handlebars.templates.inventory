@@ -1,0 +1,7 @@
+{
+ "SplitOn": "//##SPLIT##",
+ "Target": "Model",
+ "ExportPath": "{{ProjectRoot}}\\\\{{FileName}}",
+ "FileNamePattern": "//\\[(?<FileName>[^\\[\\]]+)\\]",
+ "RemoveFileName": true
+}

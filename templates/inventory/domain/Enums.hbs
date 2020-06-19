@@ -1,0 +1,16 @@
+{{#each DomainEnums}}
+using System;
+
+namespace {{../Namespace}}.Domain.Shared
+{
+    {{#if IsFlags}}
+    [Flags]
+    {{/if}}
+    public enum {{Name}}
+    {{write '{'}}{{#each Values}}{{#unless @first}},{{/unless}}
+        {{Name}}{{#if (isNumber IntegerValue)}} = {{IntegerValue}}{{/if}}{{/each}}
+    }
+}
+//[{{Name}}.cs]
+//##SPLIT##
+{{/each}}

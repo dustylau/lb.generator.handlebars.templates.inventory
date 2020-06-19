@@ -1,0 +1,5 @@
+{
+    "Target": "DomainEntities",
+    "ExportPath": "{{domain.ProjectRoot}}\\\\{{domain.Namespace}}.Domain\\Entities\\\\{{entity.Name}}Entity.cs",
+    "AppendToExisting": false
+}
