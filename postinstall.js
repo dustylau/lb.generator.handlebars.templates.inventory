@@ -10,7 +10,7 @@
 
 var gentlyCopy = require('gently-copy');
 
-var filesToCopy = ['generate.js', 'templates', 'models'];
+var filesToCopy = ['generate-inventory.js', 'templates', 'models'];
 
 // User's local directory
 var userPath = process.env.INIT_CWD;
