@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/dustylau/lb.generator.handlebars.templates.inventory#readme",
   "dependencies": {
+    "gently-copy": "^3.2.0",
     "lb.generator.handlebars": "^1.2.16",
     "pluralize": "^8.0.0"
   }
