@@ -1,0 +1,4 @@
+{
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain.Data.EF\\\\{{Namespace}}.Domain.Data.EF.csproj",
+    "AppendToExisting": false
+}

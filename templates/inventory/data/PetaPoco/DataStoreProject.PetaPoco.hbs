@@ -5,16 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
-    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="{{CoreNamespaceVersion}}" />
     <PackageReference Include="{{CoreNamespace}}.Shared" Version="{{CoreNamespaceVersion}}" />
     <PackageReference Include="{{CoreNamespace}}.Logging" Version="{{CoreNamespaceVersion}}" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
+    <PackageReference Include="PetaPoco.Compiled" Version="6.0.452" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\\{{Namespace}}.Domain.Core\\{{Namespace}}.Domain.Core.csproj" />
+    <ProjectReference Include="..\\{{Namespace}}.Domain\\{{Namespace}}.Domain.csproj" />
   </ItemGroup>
 
 </Project>

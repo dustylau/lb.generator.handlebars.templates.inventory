@@ -1,0 +1,5 @@
+{
+    "Target": "Model",
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain.Data.Linq2DB\\DataStore.cs",
+    "AppendToExisting": false
+}

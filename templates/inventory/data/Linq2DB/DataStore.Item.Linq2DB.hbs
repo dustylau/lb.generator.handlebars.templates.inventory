@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using {{domain.Namespace}}.Domain.Interfaces.Data;
+
+namespace {{domain.Namespace}}.Domain.Data
+{
+    public partial class DataStore
+    {
+		public ITable<{{entity.Name}}> {{pluralize entity.Name}} { get { return this.GetTable<{{entity.Name}}>(); } }
+
+        [Table(Schema="dbo", Name="{{entity.Name}}")]
+        public partial class {{entity.Name}} : I{{entity.Name}}
+        {
+            {{#each entity.Properties}}
+            [Column(DbType="{{getSqlType .}}", DataType=DataType.Int64)]
+            public virtual {{getType .}} {{Name}} { get; set; }
+
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+            [Column(Name = "{{Name}}{{relatedEntityIdProperty.Name}}")]
+            public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+            [Column(Name = "{{Name}}{{relatedEntityIdProperty.Name}}")]
+            public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+
+            {{/each}}
+
+            #region Associations
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+
+            /// <summary>
+            /// FK_{{../entity.Name}}_{{Name}}
+            /// </summary>
+            [Association(ThisKey="{{Name}}{{relatedEntityIdProperty.Name}}", OtherKey="{{relatedEntityIdProperty.Name}}", CanBeNull={{#if IsRequired}}false{{else}}true{{/if}}, Relationship=Relationship.ManyToOne, KeyName="FK_{{../entity.Name}}_{{Name}}", BackReferenceName="{{pluralize ../entity.Name}}")]
+            public {{RelatedEntity}} {{Name}} { get; set; }
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+
+            /// <summary>
+            /// FK_{{../entity.Name}}_{{Name}}
+            /// </summary>
+            [Association(ThisKey="{{Name}}{{relatedEntityIdProperty.Name}}", OtherKey="{{relatedEntityIdProperty.Name}}", CanBeNull={{#if IsRequired}}false{{else}}true{{/if}}, Relationship=Relationship.OneToOne, KeyName="FK_{{../entity.Name}}_{{Name}}", BackReferenceName="{{pluralize ../entity.Name}}")]
+            public {{RelatedEntity}} {{Name}} { get; set; }
+            {{/each}}
+
+            #endregion
+
+            public {{entity.Name}}()
+            {
+            }
+
+            public {{entity.Name}}(I{{entity.Name}} {{camelCase entity.Name}})
+            {
+                CopyFrom({{camelCase entity.Name}});
+            }
+
+            public I{{entity.Name}} CopyFrom(I{{entity.Name}} @from)
+            {
+                {{#each entity.Properties}}
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+                {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+                {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                return this;
+            }
+
+            public void CopyTo(I{{entity.Name}} @to)
+            {
+                @to.CopyFrom(this);
+            }
+        }
+
+        public async Task<IEnumerable<DataStore.{{entity.Name}}>> Get{{pluralize entity.Name}}()
+        {
+            return await GetAll<DataStore.{{entity.Name}}>();
+        }
+
+        public async Task<DataStore.{{entity.Name}}> Get{{entity.Name}}({{getType entity.idProperty}} id)
+        {
+            return await Get<DataStore.{{entity.Name}}, {{getType entity.idProperty}}>(id);
+        }
+
+        public async Task<{{getType entity.idProperty}}> Insert{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await Insert<DataStore.{{entity.Name}}, {{getType entity.idProperty}}>({{camelCase entity.Name}});
+        }
+
+        public async Task<int> Update{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await Update<DataStore.{{entity.Name}}>({{camelCase entity.Name}});
+        }
+
+        public async Task<int> Delete{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await Delete<DataStore.{{entity.Name}}>({{camelCase entity.Name}});
+        }
+    }
+}

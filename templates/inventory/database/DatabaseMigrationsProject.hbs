@@ -53,14 +53,58 @@ END";
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentMigrator" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Abstractions" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
+    <PackageReference Include="FluentMigrator" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Abstractions" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
   </ItemGroup>
 
 </Project>
 //[{{Namespace}}.Database.Migrations/{{Namespace}}.Database.Migrations.csproj]
+//##SPLIT##
+using CommonServiceLocator;
+using FluentMigrator.Runner;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace {{Namespace}}.Database.Migrations
+{
+    public class MigrationConfiguration
+    {
+        public static string ConnectionStringName = "ConnectionString";
+
+        public static void EnsureDatabaseExists()
+        {
+            EnsureDatabaseExists(ServiceLocator.Current.GetInstance<string>(ConnectionStringName));
+        }
+
+        public static void EnsureDatabaseExists(string connectionString)
+        {
+            var ensureDatabaseExists = new EnsureDatabaseExists(connectionString);
+            ensureDatabaseExists.Create();
+        }
+
+        public static IServiceCollection ConfigureServices(IServiceCollection services)
+        {
+            return ConfigureServices(services, ServiceLocator.Current.GetInstance<string>(ConnectionStringName));
+        }
+
+        public static IServiceCollection ConfigureServices(IServiceCollection services, string connectionString)
+        {
+            return services
+                .AddFluentMigratorCore()
+                .ConfigureRunner(
+                    runner => runner
+                        .AddSqlServer()
+                        .WithGlobalConnectionString(connectionString)
+                        .ScanIn(typeof(EnsureDatabaseExists).Assembly).For.Migrations()
+                );
+        }
+    }
+}
+//[{{Namespace}}.Database.Migrations/MigrationConfiguration.cs]

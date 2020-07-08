@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using {{CoreNamespace}}.Logging;
+using {{CoreNamespace}}.Shared;
+using {{Namespace}}.Domain.Core.Entities.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.Domain.Data.EF
+{
+    public partial class DataStore : DbContext
+    {
+        public static bool RethrowExceptions = true;
+
+        private readonly ILogger _log;
+
+        private readonly Dictionary<Type, string> _tableNames = new Dictionary<Type, string>();
+
+        public string GetTableName<T>()
+        {
+            return GetTableName(typeof(T));
+        }
+
+        public string GetTableName(Type type)
+        {
+            if (_tableNames.TryGetValue(type, out var tableName))
+                return tableName;
+
+            var tableAttribute = type.GetCustomAttribute<TableAttribute>(true);
+
+            tableName = tableAttribute == null ? type.Name : tableAttribute.Name;
+
+            _tableNames.Add(type, tableName);
+
+            return tableName;
+        }
+		
+        private async Task<IEnumerable<T>> GetAll<T>() where T : class
+        {
+            return await Set<T>().AsNoTracking().ToListAsync();
+        }
+
+        private async Task<T> Get<T, TId>(TId id) where T : class
+        {
+            return await Set<T>().FindAsync(id);
+        }
+
+        public async Task<long> Insert<T>(T entity) where T : class
+        {
+            await Set<T>().AddAsync(entity);
+            return await SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateEntity<T>(T entity) where T : class
+        {
+            var entry = Update(entity);
+            entry.State = EntityState.Modified;
+            return await SaveChangesAsync();
+        }
+
+        public async Task<int> Delete<T>(T entity) where T : class
+        {
+            Set<T>().Remove(entity);
+            return await SaveChangesAsync();
+        }
+
+        private void HandleException(string message, Exception exception)
+        {
+            _log.Warn(message, exception);
+
+            if (RethrowExceptions)
+            {
+                throw new Exception(message, exception);
+            }
+        }
+    }
+}

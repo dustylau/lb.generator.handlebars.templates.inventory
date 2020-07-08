@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using {{CoreNamespace}}.Logging;
+using {{CoreNamespace}}.Shared;
+using LinqToDB;
+using LinqToDB.Mapping;
+using Microsoft.Extensions.Logging;
+
+namespace {{Namespace}}.Domain.Data
+{
+    public partial class DataStore : LinqToDB.Data.DataConnection
+	{
+        public DataStore()
+		{
+			InitDataContext();
+			InitMappingSchema();
+		}
+
+		public DataStore(string configuration)
+			: base(configuration)
+		{
+            Console.WriteLine($"CONNECTION STRING: {configuration}");
+			InitDataContext();
+			InitMappingSchema();
+		}
+
+		partial void InitDataContext  ();
+		partial void InitMappingSchema();
+	}
+}

@@ -1,0 +1,4 @@
+{
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain.Data.Linq2DB\\\\LinqToDBSettings.cs",
+    "AppendToExisting": false
+}

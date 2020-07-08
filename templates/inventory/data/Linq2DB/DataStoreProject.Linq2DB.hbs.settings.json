@@ -1,0 +1,4 @@
+{
+    "ExportPath": "{{ProjectRoot}}\\\\{{Namespace}}.Domain.Data.Linq2DB\\\\{{Namespace}}.Domain.Data.Linq2DB.csproj",
+    "AppendToExisting": false
+}

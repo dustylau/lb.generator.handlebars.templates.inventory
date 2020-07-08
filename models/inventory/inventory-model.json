@@ -21,7 +21,7 @@
           "Description": null,
           "RelatedEntity": "ItemType",
           "IsRequired": true,
-          "Id": "45b60000-0edc-3c97-19a4-08d7fba26f3a",
+          "Id": "45b60000-0edc-3c97-47e8-08d8227ebfab",
           "Tags": null,
           "CustomProperties": null
         },
@@ -32,7 +32,7 @@
           "Description": null,
           "RelatedEntity": "ItemGroup",
           "IsRequired": null,
-          "Id": "45b60000-0edc-3c97-56bd-08d7fba26f3b",
+          "Id": "45b60000-0edc-3c97-46e5-08d8227ebfac",
           "Tags": null,
           "CustomProperties": null
         },
@@ -43,7 +43,7 @@
           "Description": null,
           "RelatedEntity": "ItemClass",
           "IsRequired": null,
-          "Id": "45b60000-0edc-3c97-59b2-08d7fba26f3b",
+          "Id": "45b60000-0edc-3c97-49ae-08d8227ebfac",
           "Tags": null,
           "CustomProperties": null
         }
@@ -54,7 +54,7 @@
           "InterfaceName": "IEntity",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-df9c-08d7fba26f3e",
+          "Id": "45b60000-0edc-3c97-11fb-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -63,7 +63,7 @@
           "InterfaceName": "IHasDescription",
           "IsMixinOnly": true,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-08d7-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-29e9-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -72,12 +72,12 @@
           "InterfaceName": "IActivatable",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-0d97-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-2c14-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-23bf-08d7fba26f3f",
+      "Id": "45b60000-0edc-3c97-3859-08d8227ebfaf",
       "Tags": null,
       "CustomProperties": null
     },
@@ -97,7 +97,7 @@
           "Description": null,
           "RelatedEntity": "Location",
           "IsRequired": null,
-          "Id": "45b60000-0edc-3c97-50ee-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-5561-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
@@ -108,7 +108,7 @@
           "InterfaceName": "IEntity",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-5714-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-5bd5-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -117,7 +117,7 @@
           "InterfaceName": "IHasDescription",
           "IsMixinOnly": true,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-59f1-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-5f43-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -126,12 +126,12 @@
           "InterfaceName": "IActivatable",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-5d1e-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-6297-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-60ec-08d7fba26f3f",
+      "Id": "45b60000-0edc-3c97-63c5-08d8227ebfaf",
       "Tags": null,
       "CustomProperties": null
     },
@@ -150,7 +150,7 @@
           "InterfaceName": "IEntity",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-735c-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-735a-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -159,7 +159,7 @@
           "InterfaceName": "IHasDescription",
           "IsMixinOnly": true,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-806b-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-7b11-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -168,12 +168,12 @@
           "InterfaceName": "IActivatable",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-8e11-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-8195-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-9490-08d7fba26f3f",
+      "Id": "45b60000-0edc-3c97-8686-08d8227ebfaf",
       "Tags": null,
       "CustomProperties": null
     },
@@ -192,7 +192,7 @@
           "InterfaceName": "IEntity",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-bd0b-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-9d12-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -201,7 +201,7 @@
           "InterfaceName": "IHasDescription",
           "IsMixinOnly": true,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-c9a8-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-a376-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -210,12 +210,12 @@
           "InterfaceName": "IActivatable",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-d759-08d7fba26f3f",
+          "Id": "45b60000-0edc-3c97-aa9b-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-e0fe-08d7fba26f3f",
+      "Id": "45b60000-0edc-3c97-aff9-08d8227ebfaf",
       "Tags": null,
       "CustomProperties": null
     },
@@ -234,7 +234,7 @@
           "InterfaceName": "IEntity",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-02cb-08d7fba26f40",
+          "Id": "45b60000-0edc-3c97-c2a2-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -243,7 +243,7 @@
           "InterfaceName": "IHasDescription",
           "IsMixinOnly": true,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-0dfb-08d7fba26f40",
+          "Id": "45b60000-0edc-3c97-c996-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         },
@@ -252,12 +252,12 @@
           "InterfaceName": "IActivatable",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-1a22-08d7fba26f40",
+          "Id": "45b60000-0edc-3c97-d1b5-08d8227ebfaf",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-1fc4-08d7fba26f40",
+      "Id": "45b60000-0edc-3c97-d720-08d8227ebfaf",
       "Tags": null,
       "CustomProperties": null
     }
@@ -287,7 +287,7 @@
           "DefaultExpression": null,
           "IsEnum": null,
           "Enum": null,
-          "Id": "45b60000-0edc-3c97-3c8c-08d7fba26f45",
+          "Id": "45b60000-0edc-3c97-8904-08d8227ebfb4",
           "Tags": null,
           "CustomProperties": null
         }
@@ -297,12 +297,12 @@
         {
           "$id": "28",
           "Name": "TId",
-          "Id": "45b60000-0edc-3c97-4262-08d7fba26f46",
+          "Id": "45b60000-0edc-3c97-3266-08d8227ebfb5",
           "Tags": null,
           "CustomProperties": null
         }
       ],
-      "Id": "45b60000-0edc-3c97-68bd-08d7fba26f46",
+      "Id": "45b60000-0edc-3c97-5772-08d8227ebfb5",
       "Tags": null,
       "CustomProperties": {
         "$id": "29",
@@ -331,13 +331,13 @@
               "Value": "long"
             }
           ],
-          "Id": "45b60000-0edc-3c97-695a-08d7fba26f49",
+          "Id": "45b60000-0edc-3c97-7b42-08d8227ebfb7",
           "Tags": null,
           "CustomProperties": null
         }
       ],
       "TypeParameters": [],
-      "Id": "45b60000-0edc-3c97-6c35-08d7fba26f49",
+      "Id": "45b60000-0edc-3c97-7d40-08d8227ebfb7",
       "Tags": null,
       "CustomProperties": null
     },
@@ -364,14 +364,14 @@
           "DefaultExpression": "1",
           "IsEnum": null,
           "Enum": null,
-          "Id": "45b60000-0edc-3c97-7170-08d7fba26f49",
+          "Id": "45b60000-0edc-3c97-806b-08d8227ebfb7",
           "Tags": null,
           "CustomProperties": null
         }
       ],
       "Interfaces": [],
       "TypeParameters": [],
-      "Id": "45b60000-0edc-3c97-74fa-08d7fba26f49",
+      "Id": "45b60000-0edc-3c97-83a0-08d8227ebfb7",
       "Tags": null,
       "CustomProperties": null
     },
@@ -398,7 +398,7 @@
           "DefaultExpression": null,
           "IsEnum": null,
           "Enum": null,
-          "Id": "45b60000-0edc-3c97-bad3-08d7fba26f49",
+          "Id": "45b60000-0edc-3c97-ce9e-08d8227ebfb7",
           "Tags": null,
           "CustomProperties": null
         }
@@ -409,13 +409,13 @@
           "InterfaceName": "IHasId",
           "IsMixinOnly": false,
           "TypeParameterValues": [],
-          "Id": "45b60000-0edc-3c97-c135-08d7fba26f49",
+          "Id": "45b60000-0edc-3c97-d4af-08d8227ebfb7",
           "Tags": null,
           "CustomProperties": null
         }
       ],
       "TypeParameters": [],
-      "Id": "45b60000-0edc-3c97-c33f-08d7fba26f49",
+      "Id": "45b60000-0edc-3c97-d60a-08d8227ebfb7",
       "Tags": null,
       "CustomProperties": null
     },
@@ -442,20 +442,20 @@
           "DefaultExpression": null,
           "IsEnum": null,
           "Enum": null,
-          "Id": "45b60000-0edc-3c97-c8dc-08d7fba26f49",
+          "Id": "45b60000-0edc-3c97-d923-08d8227ebfb7",
           "Tags": null,
           "CustomProperties": null
         }
       ],
       "Interfaces": [],
       "TypeParameters": [],
-      "Id": "45b60000-0edc-3c97-ccec-08d7fba26f49",
+      "Id": "45b60000-0edc-3c97-db26-08d8227ebfb7",
       "Tags": null,
       "CustomProperties": null
     }
   ],
   "Description": "Letter B - Inventory",
-  "Id": "45b60000-0edc-3c97-f6a1-08d7fba26f49",
+  "Id": "45b60000-0edc-3c97-0116-08d8227ebfb8",
   "Tags": null,
   "CustomProperties": {
     "$id": "40",
@@ -463,6 +463,18 @@
       "$id": "41",
       "Value": "data source=localhost\\\\SQL2017;initial catalog=LB.Inventory.DataStore;User ID=sa;Password=LBSuccess!;persist security info=False;packet size=4096",
       "Name": "MainConnectionString",
+      "Type": "String"
+    },
+    "CoreNamespaceVersion": {
+      "$id": "42",
+      "Value": "2020.5.19.1418",
+      "Name": "CoreNamespaceVersion",
+      "Type": "String"
+    },
+    "CoreESNamespaceVersion": {
+      "$id": "43",
+      "Value": "2020.5.19.1418",
+      "Name": "CoreESNamespaceVersion",
       "Type": "String"
     }
   }

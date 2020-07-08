@@ -1,0 +1,105 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
+using {{domain.Namespace}}.Domain.Interfaces.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace {{domain.Namespace}}.Domain.Data.EF
+{
+    public partial class DataStore
+    {
+        public DbSet<DataStore.{{entity.Name}}> {{pluralize entity.Name}} { get; set; }
+
+        [Table("{{entity.Name}}")]
+        public partial class {{entity.Name}} : I{{entity.Name}}
+        {
+            {{#each entity.Properties}}
+            {{#if IsId}}
+            {{#if IsGenerated}}
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            {{/if}}
+            {{/if}}
+            [Column("{{Name}}")]
+            public virtual {{getType .}} {{Name}} { get; set; }
+
+            {{/each}}
+
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+            [Column("{{Name}}{{relatedEntityIdProperty.Name}}")]
+            public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+            [Column("{{Name}}{{relatedEntityIdProperty.Name}}")]
+            public virtual {{getType relatedEntityIdProperty}}{{#unless IsRequired}}?{{/unless}} {{Name}}{{relatedEntityIdProperty.Name}} { get; set; }
+
+            {{/each}}
+
+            {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+            [NotMapped]
+            public virtual I{{Name}} {{Name}} { get; set; }
+
+            {{/each}}
+            {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+            [NotMapped]
+            public virtual I{{Name}} {{Name}} { get; set; }
+
+            {{/each}}
+
+            public {{entity.Name}}()
+            {
+            }
+
+            public {{entity.Name}}(I{{entity.Name}} {{camelCase entity.Name}})
+            {
+                CopyFrom({{camelCase entity.Name}});
+            }
+
+            public I{{entity.Name}} CopyFrom(I{{entity.Name}} @from)
+            {
+                {{#each entity.Properties}}
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                {{#each (where entity.Relations 'RelationType eq ManyToOne')}}
+                {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                {{#each (where entity.Relations 'RelationType eq OneToOne')}}
+                {{Name}}{{relatedEntityIdProperty.Name}} = @from.{{Name}}{{relatedEntityIdProperty.Name}};
+                {{Name}} = @from.{{Name}};
+                {{/each}}
+                return this;
+            }
+
+            public void CopyTo(I{{entity.Name}} @to)
+            {
+                @to.CopyFrom(this);
+            }
+        }
+
+        public async Task<IEnumerable<DataStore.{{entity.Name}}>> Get{{pluralize entity.Name}}()
+        {
+            return await GetAll<DataStore.{{entity.Name}}>();
+        }
+
+        public async Task<DataStore.{{entity.Name}}> Get{{entity.Name}}(long id)
+        {
+            return await Get<DataStore.{{entity.Name}}, long>(id);
+        }
+
+        public async Task<long> Insert{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await Insert<DataStore.{{entity.Name}}>({{camelCase entity.Name}});
+        }
+
+        public async Task<int> Update{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await UpdateEntity<DataStore.{{entity.Name}}>({{camelCase entity.Name}});
+        }
+
+        public async Task<int> Delete{{entity.Name}}(DataStore.{{entity.Name}} {{camelCase entity.Name}})
+        {
+            return await Delete<DataStore.{{entity.Name}}>({{camelCase entity.Name}});
+        }
+    }
+}

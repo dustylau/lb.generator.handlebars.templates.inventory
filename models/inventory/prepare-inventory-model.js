@@ -255,6 +255,11 @@ const prepare = function(model) {
             relation.relatedEntityIdProperty = relatedEntity.idProperty;
         }
     }
+
+    for (const customProperty in model.CustomProperties) {
+        var property = model.CustomProperties[customProperty];
+        model[property.Name] = property.Value;
+    }
 };
 
 exports.prepare = prepare;

@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using LinqToDB.Configuration;
+
+namespace {{Namespace}}.Domain.Data.Linq2DB
+{
+    public class LinqToDBSettings : ILinqToDBSettings
+    {
+        public IEnumerable<IDataProviderSettings> DataProviders => Enumerable.Empty<IDataProviderSettings>();
+
+        public string DefaultConfiguration => "SqlServer";
+        public string DefaultDataProvider => "SqlServer";
+
+        public IEnumerable<IConnectionStringSettings> ConnectionStrings
+        {
+            get
+            {
+                yield return
+                    new ConnectionStringSettings
+                    {
+                        Name = "Main",
+                        ProviderName = "SqlServer",
+                        ConnectionString = "{{{MainConnectionString}}}"
+                    };
+            }
+        }
+    }
+}

@@ -42,19 +42,19 @@
 
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
-    <PackageReference Include="FluentMigrator" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Abstractions" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
-    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Abstractions" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Extensions.SqlServer" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.7" />
+    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.7" />
     <PackageReference Include="Lamar" Version="4.3.0" />
-    <PackageReference Include="{{CoreNamespace}}.IOC" Version="2020.4.8.2252" />
-    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="2020.4.8.2252" />
-    <PackageReference Include="{{CoreNamespace}}.Logging" Version="2020.4.8.2252" />
-    <PackageReference Include="{{CoreNamespace}}.Shared" Version="2020.4.8.2252" />
+    <PackageReference Include="{{CoreNamespace}}.IOC" Version="{{CoreNamespaceVersion}}" />
+    <PackageReference Include="{{CoreNamespace}}.IOC.Interfaces" Version="{{CoreNamespaceVersion}}" />
+    <PackageReference Include="{{CoreNamespace}}.Logging" Version="{{CoreNamespaceVersion}}" />
+    <PackageReference Include="{{CoreNamespace}}.Shared" Version="{{CoreNamespaceVersion}}" />
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -171,17 +171,9 @@ namespace {{Namespace}}.Database.Migrator
         /// <summary>
         /// Configure the dependency injection services
         /// </summary>
-        private static IServiceProvider CreateServices()
+        public static IServiceProvider CreateServices()
         {
-            return new ServiceCollection()
-                .AddFluentMigratorCore()
-                .ConfigureRunner(
-                    runner => runner
-                        .AddSqlServer()
-                        .WithGlobalConnectionString(
-                            ServiceLocator.Current.GetInstance<ISettings>().MainConnectionString)
-                        .ScanIn(typeof(EnsureDatabaseExists).Assembly).For.Migrations()
-                )
+            return MigrationConfiguration.ConfigureServices(new ServiceCollection())
                 .AddLogging(
                     builder => builder.AddProvider(
                         new Log4NetProvider(ServiceLocator.Current.GetInstance<string>("Log4NetConfigPath")
